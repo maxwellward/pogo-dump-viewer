@@ -1,11 +1,12 @@
 <template>
 	<p>Data page</p>
-	{{ data }}
+	<Purchases />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useDataStore } from '../store';
+import Purchases from '../components/purchases.vue';
 
 const dataStore = useDataStore();
 

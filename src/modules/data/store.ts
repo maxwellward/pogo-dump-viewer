@@ -16,6 +16,6 @@ export const useDataStore = defineStore('data', {
 	},
 
 	getters: {
-		data: (state) => state.data,
+		getData: (state) => state.data,
 	},
 });

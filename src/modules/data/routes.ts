@@ -1,6 +1,6 @@
 import Data from './views/data.vue';
 
-export const homeRoutes = [
+export const dataRoutes = [
 	{
 		path: '/data',
 		name: 'data',

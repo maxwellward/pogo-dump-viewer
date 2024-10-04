@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia';
 
 interface State {
-	data: object[];
+	data: Record<string, object>;
 }
 
 export const useDataStore = defineStore('data', {
 	state: (): State => ({
-		data: [],
+		data: {},
 	}),
 
 	actions: {
-		setData(data: object[]) {
-			this.data = data;
+		pushData(name: string, data: object) {
+			this.data[name] = data;
 		},
 	},
 

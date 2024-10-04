@@ -1,19 +1,24 @@
 /**
- * Converts a TSV (Tab-Separated Values) file to a JSON array.
+ * Converts TSV (Tab-Separated Values) content to a JSON array.
  *
- * @param {File} file - The TSV file to be converted.
- * @returns {Promise<object[]>} A promise that resolves to an array of objects representing the TSV data.
+ * @param content - The TSV content as a string.
+ * @returns A promise that resolves to an array of objects, where each object represents a row in the TSV.
+ *          The keys of the objects are derived from the headers in the first row of the TSV.
  *
  * @example
- * const file = new File(["header1\theader2\nvalue1\tvalue2"], "example.tsv");
- * convertTsvToJson(file).then(jsonData => {
- *   console.log(jsonData);
- *   // Output: [{ header1: "value1", header2: "value2" }]
- * });
+ * ```typescript
+ * const tsvContent = "name\tage\tcity\nJohn\t30\tNew York\nJane\t25\tLos Angeles";
+ * const jsonArray = await convertTsvToJson(tsvContent);
+ * console.log(jsonArray);
+ * // Output:
+ * // [
+ * //   { name: "John", age: "30", city: "New York" },
+ * //   { name: "Jane", age: "25", city: "Los Angeles" }
+ * // ]
+ * ```
  */
-export const convertTsvToJson = async (file: File) => {
-	const rawText = await file.text();
-	const rows = rawText.trim().split('\n');
+export const convertTsvToJson = async (content: string) => {
+	const rows = content.trim().split('\n');
 	const headers = rows[0].split('\t');
 
 	// Parse rows

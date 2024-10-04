@@ -2,11 +2,13 @@ import { defineStore } from 'pinia';
 
 interface State {
 	data: Record<string, object>;
+	loadingState: LoadingState | undefined;
 }
 
 export const useDataStore = defineStore('data', {
 	state: (): State => ({
 		data: {},
+		loadingState: undefined,
 	}),
 
 	actions: {
@@ -19,3 +21,8 @@ export const useDataStore = defineStore('data', {
 		getData: (state) => state.data,
 	},
 });
+
+export enum LoadingState {
+	UNZIPPING = 'unzipping',
+	CONVERTING = 'converting',
+}

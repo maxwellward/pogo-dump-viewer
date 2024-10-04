@@ -10,6 +10,8 @@
 	},
 	"dependencies": {
 		"@zip.js/zip.js": "^2.7.52",
+		"d3": "^7.9.0",
+		"d3-contour": "^4.0.2",
 		"pinia": "^2.2.4",
 		"vue": "^3.4.37",
 		"vue-router": "^4.4.5"

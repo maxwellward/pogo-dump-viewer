@@ -89,7 +89,6 @@ const saveFilesToStore = async () => {
 		completedFiles++;
 
 		const percentage = (completedFiles / totalFiles) * 100;
-		console.log(completedFiles + ' /// ' + totalFiles);
 		emit('changeProcessingState', LoadingState.CONVERTING, percentage.toFixed(0), fileNameWithoutExtension);
 	};
 

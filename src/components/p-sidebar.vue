@@ -1,5 +1,5 @@
 <template>
-	<div class="border border-red-500 h-full px-8 pt-12 bg-background-secondary flex flex-col justify-between">
+	<div class="h-full px-8 pt-12 bg-background-secondary flex flex-col justify-between">
 		<div>
 			<div class="flex gap-2 items-center text-nowrap">
 				<Logo class="size-8" />

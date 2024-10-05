@@ -1,5 +1,6 @@
 <template>
-	<div id="app" class="w-full h-screen justify-center flex flex-col items-center">
+	<div id="app" class="h-screen flex">
+		<p-sidebar />
 		<router-view />
 	</div>
 </template>

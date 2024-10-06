@@ -34,11 +34,12 @@
 import { ref } from 'vue';
 import { unzipFile } from '../../../helpers/unzipFile';
 import { convertTsvToJson } from '../../../helpers/convertTsvToJson';
-import { LoadingState, useDataStore } from '../../data/store';
+import { LoadingState, useDataStore, usefulFiles } from '../../data/store';
 import { convertCsvToJson } from '../../../helpers/convertCsvToJson';
 import router from '../../../router';
 import { ArrowUpTrayIcon } from '@heroicons/vue/20/solid';
 import { PaperAirplaneIcon } from '@heroicons/vue/24/outline';
+import { processGameplay } from '../../../helpers/processGameplay';
 
 const dataStore = useDataStore();
 const isDragOver = ref(false);
@@ -103,6 +104,10 @@ const handleUploadedFiles = async () => {
 		unzippedFiles.push(...(await unzipFile(playerJourneyZip)));
 	}
 
+	unzippedFiles = unzippedFiles.filter((file) => {
+		return usefulFiles.includes(file.name);
+	});
+
 	totalFiles = unzippedFiles.length;
 	saveFilesToStore();
 };
@@ -110,6 +115,11 @@ const handleUploadedFiles = async () => {
 let completedFiles = 0;
 
 const saveFilesToStore = async () => {
+	// get the Gameplay.txt file
+	const gameplayFile = unzippedFiles.find((file) => file.name === 'Gameplay.txt');
+	if (gameplayFile) await processGameplay(gameplayFile);
+	completedFiles++;
+
 	const processFile = async (file: File, convertFunction: (text: string) => Promise<any>) => {
 		const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
 		const json = await convertFunction(await file.text());

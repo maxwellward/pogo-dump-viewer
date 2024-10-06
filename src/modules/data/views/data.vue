@@ -1,8 +1,9 @@
 <template>
-	<p>Data page</p>
-	<Purchases />
+	<div class="p-12 w-full">
+		<Header />
+	</div>
 </template>
 
 <script setup lang="ts">
-import Purchases from '../components/purchases.vue';
+import Header from '../components/header.vue';
 </script>

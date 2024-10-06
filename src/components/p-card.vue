@@ -1,11 +1,11 @@
 <template>
-	<div class="bg-slate-400 flex items-start flex-col rounded-lg">
-		<div class="font-bold text-lg px-2 pt-2">
+	<div class="border border-[#E6E8EC] rounded-lg">
+		<div class="font-bold text-lg mt-3 mx-4">
 			<slot name="top" />
 		</div>
 
-		<div class="p-2">
-			<slot name="content" />
+		<div class="mx-4 my-3">
+			<slot name="body" />
 		</div>
 	</div>
 </template>

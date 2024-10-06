@@ -17,7 +17,7 @@ export const useDataStore = defineStore('data', {
 				startDate: '',
 				level: 0,
 				totalXP: 0,
-				pokecoin: 0,
+				pokecoins: 0,
 				stardust: 0,
 				distanceWalked: 0,
 				nintendoAccountId: '',
@@ -74,7 +74,7 @@ export type PlayerInfo = {
 	startDate: string;
 	level: number;
 	totalXP: number;
-	pokecoin: number;
+	pokecoins: number;
 	stardust: number;
 	distanceWalked: number;
 	nintendoAccountId: string;

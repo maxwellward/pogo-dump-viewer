@@ -21,8 +21,8 @@ export const useDataStore = defineStore('data', {
 				stardust: 0,
 				distanceWalked: 0,
 				nintendoAccountId: '',
-				pokemonHomeSupportId: '',
-				pokemonHomeTrainerName: '',
+				supportId: '',
+				username: '',
 				buddyNickname: '',
 			},
 			eggsOwned: 0,
@@ -64,21 +64,23 @@ export const useDataStore = defineStore('data', {
 
 type Gameplay = {
 	pokemonCount: number;
-	playerInfo: {
-		startDate: string;
-		level: number;
-		totalXP: number;
-		pokecoin: number;
-		stardust: number;
-		distanceWalked: number;
-		nintendoAccountId: string;
-		pokemonHomeSupportId: string;
-		pokemonHomeTrainerName: string;
-		buddyNickname: string;
-	};
+	playerInfo: PlayerInfo;
 	eggsOwned: number;
 	eggsHatched: number;
 	itemCount: number;
+};
+
+export type PlayerInfo = {
+	startDate: string;
+	level: number;
+	totalXP: number;
+	pokecoin: number;
+	stardust: number;
+	distanceWalked: number;
+	nintendoAccountId: string;
+	supportId: string;
+	username: string;
+	buddyNickname: string;
 };
 
 export enum LoadingState {
@@ -147,10 +149,10 @@ export const usefulFiles: string[] = [
 	'InAppPurchases.tsv',
 	'App_Installs.csv',
 	'App_Sessions.csv',
-	'Deploy_Pokemon1.csv',
-	'Deploy_Pokemon2.csv',
-	'Feed_Pokemon1.csv',
-	'Feed_Pokemon2.csv',
+	// 'Deploy_Pokemon1.csv',
+	// 'Deploy_Pokemon2.csv',
+	// 'Feed_Pokemon1.csv',
+	// 'Feed_Pokemon2.csv',
 	'Gym_battle1.csv',
 	'Gym_battle2.csv',
 	'Incense_encounter1.csv',
@@ -159,8 +161,8 @@ export const usefulFiles: string[] = [
 	'Join_Raid_lobby2.csv',
 	'Lure_encounter1.csv',
 	'Lure_encounter2.csv',
-	'Map_Pokemon_encounter1.csv',
-	'Map_Pokemon_encounter2.csv',
-	'Pokestop_spin1.csv',
-	'Pokestop_spin2.csv',
+	// 'Map_Pokemon_encounter1.csv',
+	// 'Map_Pokemon_encounter2.csv',
+	// 'Pokestop_spin1.csv',
+	// 'Pokestop_spin2.csv',
 ];

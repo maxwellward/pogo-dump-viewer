@@ -38,12 +38,12 @@ const extractPlayerInfo = (content: string, dataStore: any) => {
 		startDate: /Start date:\s*(.*)/,
 		level: /Level:\s*(\d+)/,
 		totalXP: /Total XP:\s*(\d+)/,
-		pokecoin: /Pokecoin:\s*(\d+)/,
+		pokecoins: /Pokecoin:\s*(\d+)/,
 		stardust: /Stardust:\s*(\d+)/,
 		distanceWalked: /Distance walked:\s*([\d.]+)\s*km/,
 		nintendoAccountId: /Nintendo Account ID:\s*(\w+)/,
-		pokemonHomeSupportId: /Pokemon Home Support ID:\s*(\w+)/,
-		pokemonHomeTrainerName: /Pokemon Home Trainer Name:\s*(.*)/,
+		supportId: /Pokemon Home Support ID:\s*(\w+)/,
+		username: /Pokemon Home Trainer Name:\s*(.*)/,
 		buddyNickname: /Buddy nickname:\s*(.*)/,
 	};
 
@@ -51,12 +51,12 @@ const extractPlayerInfo = (content: string, dataStore: any) => {
 		startDate: '',
 		level: 0,
 		totalXP: 0,
-		pokecoin: 0,
+		pokecoins: 0,
 		stardust: 0,
 		distanceWalked: 0,
 		nintendoAccountId: '',
-		pokemonHomeSupportId: '',
-		pokemonHomeTrainerName: '',
+		supportId: '',
+		username: '',
 		buddyNickname: '',
 	};
 

@@ -9,6 +9,8 @@ export default {
 			colors: {
 				// I need better names for these
 				title: '#F6866A',
+				primary: '#23262F',
+				secondary: '#6A6C73',
 				active: '#6956E5',
 				inactive: '#878787',
 				background: {

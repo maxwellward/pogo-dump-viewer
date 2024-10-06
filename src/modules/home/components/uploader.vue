@@ -1,14 +1,32 @@
 <template>
-	<input type="text" placeholder="Encryption password" class="border mb-1" v-model="password" />
-	<div
-		class="border-2 border-dashed border-gray-300 p-4 text-center cursor-pointer"
-		@dragover.prevent="onDragOver"
-		@dragleave="onDragLeave"
-		@drop.prevent="onDrop"
-		@click="onClick"
-		:class="{ 'border-black bg-gray-200': isDragOver }">
-		<p>Drag and drop a zip file here, or click to select a file</p>
-		<input type="file" accept=".zip" @change="onFileSelect" ref="fileInput" class="hidden" />
+	<div class="w-full h-1/3 flex justify-center items-start">
+		<div v-if="loadingState">
+			<p>{{ loadingState }}</p>
+			<p>{{ percentage }}</p>
+			<p>{{ fileBeingConverted }}</p>
+		</div>
+		<div v-else-if="passwordStep" class="flex flex-col">
+			<p>Enter ZIP Password</p>
+			<div class="flex gap-1 items-center mt-2">
+				<input type="text" placeholder="Encryption password..." class="border px-2 py-1 rounded-md border-secondary border-2" v-model="password" />
+				<button @click="handleUploadedFiles" :disabled="password.length <= 0">
+					<component :is="PaperAirplaneIcon" class="size-7 hover:translate-x-0.5 transform ease-in-out duration-150" />
+					<p class="sr-only">Submit</p>
+				</button>
+			</div>
+		</div>
+		<div
+			v-else
+			class="border-2 border-dashed border-secondary rounded-xl size-2/3 cursor-pointer flex flex-col justify-center items-center"
+			@dragover.prevent="onDragOver"
+			@dragleave="onDragLeave"
+			@drop.prevent="onDrop"
+			@click="onClick"
+			:class="{ 'border-black bg-gray-200': isDragOver }">
+			<component :is="ArrowUpTrayIcon" class="size-24 mb-2" />
+			<p class="text-sm text-secondary">Drag and drop a zip file here, or click to select a file</p>
+			<input type="file" accept=".zip" @change="onFileSelect" ref="fileInput" class="hidden" />
+		</div>
 	</div>
 </template>
 
@@ -19,16 +37,18 @@ import { convertTsvToJson } from '../../../helpers/convertTsvToJson';
 import { LoadingState, useDataStore } from '../../data/store';
 import { convertCsvToJson } from '../../../helpers/convertCsvToJson';
 import router from '../../../router';
-
-const emit = defineEmits<{
-	(event: 'changeProcessingState', loadingState: LoadingState | undefined, percentage: string, currentFile?: string): void;
-}>();
+import { ArrowUpTrayIcon } from '@heroicons/vue/20/solid';
+import { PaperAirplaneIcon } from '@heroicons/vue/24/outline';
 
 const dataStore = useDataStore();
 const isDragOver = ref(false);
 const file = ref<File | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
+const passwordStep = ref(false);
 const password = ref('4b8327139fc60c964c52ed74569f328afb76ac8e27d7a5925a5eba847aa576ce');
+const loadingState = ref<LoadingState | null>(null);
+const percentage = ref<number>(0);
+const fileBeingConverted = ref<string>();
 
 const onDragOver = () => {
 	isDragOver.value = true;
@@ -41,14 +61,14 @@ const onDragLeave = () => {
 const onDrop = (event: DragEvent) => {
 	isDragOver.value = false;
 	if (event.dataTransfer?.files) {
-		handleUploadedFiles(event.dataTransfer.files);
+		checkUploadedFilesValidity(event.dataTransfer.files);
 	}
 };
 
 const onFileSelect = (event: Event) => {
 	const input = event.target as HTMLInputElement;
 	if (input.files) {
-		handleUploadedFiles(input.files);
+		checkUploadedFilesValidity(input.files);
 	}
 };
 
@@ -58,14 +78,21 @@ const onClick = () => {
 
 let totalFiles = 0;
 let unzippedFiles: File[] = [];
-const handleUploadedFiles = async (fileList: FileList) => {
+
+const checkUploadedFilesValidity = (fileList: FileList) => {
 	if (fileList.length > 1 || fileList[0].type !== 'application/zip') {
 		alert('Please upload only one zip file.');
 		return;
 	}
-	file.value = fileList[0];
 
-	emit('changeProcessingState', LoadingState.UNZIPPING, 0);
+	file.value = fileList[0];
+	passwordStep.value = true;
+};
+
+const handleUploadedFiles = async () => {
+	if (!file.value) return;
+
+	loadingState.value = LoadingState.UNZIPPING;
 	unzippedFiles = await unzipFile(file.value, password.value);
 
 	let playerJourneyZip = unzippedFiles.find((file) => file.name === 'Player_Journey.zip');
@@ -81,6 +108,7 @@ const handleUploadedFiles = async (fileList: FileList) => {
 };
 
 let completedFiles = 0;
+
 const saveFilesToStore = async () => {
 	const processFile = async (file: File, convertFunction: (text: string) => Promise<any>) => {
 		const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
@@ -88,8 +116,9 @@ const saveFilesToStore = async () => {
 		dataStore.pushData(fileNameWithoutExtension, json);
 		completedFiles++;
 
-		const percentage = (completedFiles / totalFiles) * 100;
-		emit('changeProcessingState', LoadingState.CONVERTING, percentage.toFixed(0), fileNameWithoutExtension);
+		percentage.value = (completedFiles / totalFiles) * 100;
+		loadingState.value = LoadingState.CONVERTING;
+		fileBeingConverted.value = fileNameWithoutExtension;
 	};
 
 	const fileProcessors: { [key: string]: (text: string) => Promise<any> } = {
@@ -105,7 +134,7 @@ const saveFilesToStore = async () => {
 		}
 	}
 
-	emit('changeProcessingState', undefined, '0');
+	loadingState.value = null;
 
 	router.push({ name: 'data' });
 };

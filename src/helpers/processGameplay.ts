@@ -47,8 +47,10 @@ export const processGameplay = async (file: File) => {
 	extractPlayerInfo(content);
 	extractEggInfo(content);
 	extractItemCount(content);
+	const pokemon = extractPokemonCollection(content);
 
 	addDataToDb({ id: 'gameplay', ...data });
+	addDataToDb({ id: 'pokemon', pokemon });
 };
 
 // Individual Processors
@@ -135,4 +137,41 @@ const extractItemCount = (content: string) => {
 	const itemCount = match ? parseInt(match[1]) : 0;
 
 	data.itemCount = itemCount;
+};
+
+const extractPokemonCollection = (content: string) => {
+	// Find the start of the "Pokemon in your collection:" section
+	const start = content.indexOf('Pokemon in your collection:');
+	if (start === -1) return []; // If no section found, return an empty array
+
+	// Extract the substring starting from the "Pokemon in your collection:"
+	const collectionSection = content.slice(start).split('\n').slice(1);
+
+	const pokemonNames = [];
+
+	// Process each line in the collection section
+	for (let line of collectionSection) {
+		line = line.trim();
+
+		// Stop processing if we hit a blank line or unrelated section
+		if (line === '' || line.startsWith('You have')) break;
+
+		// Remove nicknames or anything in parentheses at the end of the line
+		line = line.replace(/\s*\(.*\)$/, '');
+
+		// Extract name, handling both formats: with and without prefix
+		let name = line.includes('_POKEMON_')
+			? line.split('_POKEMON_').pop() // Extract after "_POKEMON_"
+			: line;
+
+		// Capitalize the first character
+		if (name) {
+			name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+		}
+
+		// Add to the list
+		pokemonNames.push(name);
+	}
+
+	return pokemonNames;
 };

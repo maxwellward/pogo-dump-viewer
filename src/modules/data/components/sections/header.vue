@@ -27,8 +27,6 @@ const playerInfo = ref();
 
 onMounted(async () => {
 	const data: Gameplay = await getDataFromDb('gameplay');
-	console.log(data);
-
 	playerInfo.value = data.playerInfo;
 });
 </script>

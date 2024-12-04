@@ -25,16 +25,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useDataStore } from '../store';
+import { onMounted, ref } from 'vue';
+import { getDataFromDb } from '../../../helpers/indexedDb';
+import { Gameplay } from '../types';
 
-const dataStore = useDataStore();
+let playerInfoList = ref();
+let data: Gameplay;
+onMounted(async () => {
+	data = await getDataFromDb('gameplay');
 
-const playerInfoList = ref([
-	{ label: 'Stardust Balance', value: dataStore.getPlayerInfo.stardust },
-	{ label: 'Items in Bag', value: dataStore.getItemCount },
-	{ label: 'Pokecoin Balance', value: dataStore.getPlayerInfo.pokecoins },
-	{ label: 'Distance Walked', value: dataStore.getPlayerInfo.distanceWalked, suffix: 'km' },
-	{ label: 'Eggs Hatched', value: dataStore.getEggsHatched },
-]);
+	playerInfoList.value = [
+		{ label: 'Stardust Balance', value: data.playerInfo.stardust },
+		{ label: 'Items in Bag', value: data.itemCount },
+		{ label: 'Pokecoin Balance', value: data.playerInfo.pokecoins },
+		{ label: 'Distance Walked', value: data.playerInfo.distanceWalked, suffix: 'km' },
+		{ label: 'Eggs Hatched', value: data.eggsHatched }
+	];
+});
 </script>

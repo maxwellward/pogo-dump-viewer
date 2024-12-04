@@ -8,7 +8,7 @@
 		<div v-else-if="passwordStep" class="flex flex-col">
 			<p>Enter ZIP Password</p>
 			<div class="flex gap-1 items-center mt-2">
-				<input type="text" placeholder="Encryption password..." class="border px-2 py-1 rounded-md border-secondary border-2" v-model="password" />
+				<input type="text" placeholder="Encryption password..." class="px-2 py-1 rounded-md border-secondary border-2" v-model="password" />
 				<button @click="handleUploadedFiles" :disabled="password.length <= 0">
 					<component :is="PaperAirplaneIcon" class="size-7 hover:translate-x-0.5 transform ease-in-out duration-150" />
 					<p class="sr-only">Submit</p>
@@ -34,14 +34,14 @@
 import { ref } from 'vue';
 import { unzipFile } from '../../../helpers/unzipFile';
 import { convertTsvToJson } from '../../../helpers/convertTsvToJson';
-import { LoadingState, useDataStore, usefulFiles } from '../../data/store';
+import { LoadingState, usefulFiles } from '../../data/types';
 import { convertCsvToJson } from '../../../helpers/convertCsvToJson';
 import router from '../../../router';
 import { ArrowUpTrayIcon } from '@heroicons/vue/20/solid';
 import { PaperAirplaneIcon } from '@heroicons/vue/24/outline';
 import { processGameplay } from '../../../helpers/processGameplay';
+import { addDataToDb, createDatabase } from '../../../helpers/indexedDb';
 
-const dataStore = useDataStore();
 const isDragOver = ref(false);
 const file = ref<File | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -81,7 +81,9 @@ let totalFiles = 0;
 let unzippedFiles: File[] = [];
 
 const checkUploadedFilesValidity = (fileList: FileList) => {
-	if (fileList.length > 1 || fileList[0].type !== 'application/zip') {
+	const allowedTypes = ['application/x-zip-compressed', 'application/zip'];
+
+	if (fileList.length > 1 || !allowedTypes.includes(fileList[0].type)) {
 		alert('Please upload only one zip file.');
 		return;
 	}
@@ -115,6 +117,8 @@ const handleUploadedFiles = async () => {
 let completedFiles = 0;
 
 const saveFilesToStore = async () => {
+	createDatabase();
+
 	// get the Gameplay.txt file
 	const gameplayFile = unzippedFiles.find((file) => file.name === 'Gameplay.txt');
 	if (gameplayFile) await processGameplay(gameplayFile);
@@ -123,7 +127,8 @@ const saveFilesToStore = async () => {
 	const processFile = async (file: File, convertFunction: (text: string) => Promise<any>) => {
 		const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
 		const json = await convertFunction(await file.text());
-		dataStore.pushData(fileNameWithoutExtension, json);
+
+		addDataToDb({id: fileNameWithoutExtension, ...json});
 		completedFiles++;
 
 		percentage.value = (completedFiles / totalFiles) * 100;

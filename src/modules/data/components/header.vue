@@ -1,6 +1,6 @@
 <template>
 	<div class="flex w-full justify-between">
-		<div>
+		<div v-if="playerInfo">
 			<h1 class="font-bold text-2xl">{{ playerInfo.username }}</h1>
 			<h2 class="text-xs text-inactive">& {{ playerInfo.buddyNickname }}</h2>
 			<h3 class="text-sm font-medium text-inactive mt-2">Level {{ playerInfo.level }} ({{ playerInfo.totalXP }} XP)</h3>
@@ -17,12 +17,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { PlayerInfo, useDataStore } from '../store';
+import { onMounted, ref } from 'vue';
 import Logo from '../../../assets/logo.vue';
 import { BugAntIcon } from '@heroicons/vue/24/outline';
+import { getDataFromDb } from '../../../helpers/indexedDb';
+import { Gameplay } from '../types';
 
-const dataStore = useDataStore();
+const playerInfo = ref();
 
-const playerInfo = ref<PlayerInfo>(dataStore.getPlayerInfo);
+onMounted(async () => {
+	const data: Gameplay = await getDataFromDb('gameplay');	
+	playerInfo.value = data.playerInfo;
+});
 </script>

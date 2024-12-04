@@ -1,19 +1,61 @@
-import { useDataStore } from '../modules/data/store';
+import { useDataStore } from '../modules/data/types';
+import { addDataToDb } from './indexedDb';
+
+type Gameplay = {
+	pokemonCount: number;
+	playerInfo: PlayerInfo;
+	eggsOwned: number;
+	eggsHatched: number;
+	itemCount: number;
+};
+
+export type PlayerInfo = {
+	startDate: string;
+	level: number;
+	totalXP: number;
+	pokecoins: number;
+	stardust: number;
+	distanceWalked: number;
+	nintendoAccountId: string;
+	supportId: string;
+	username: string;
+	buddyNickname: string;
+};
+
+let data: Gameplay = {
+	pokemonCount: 0,
+	playerInfo: {
+		startDate: '',
+		level: 0,
+		totalXP: 0,
+		pokecoins: 0,
+		stardust: 0,
+		distanceWalked: 0,
+		nintendoAccountId: '',
+		supportId: '',
+		username: '',
+		buddyNickname: '',
+	},
+	eggsOwned: 0,
+	eggsHatched: 0,
+	itemCount: 0,
+};
 
 export const processGameplay = async (file: File) => {
 	const content = await file.text();
-	const dataStore = useDataStore();
 
-	extractPokemonCount(content, dataStore);
-	extractPlayerInfo(content, dataStore);
-	extractEggInfo(content, dataStore);
-	extractItemCount(content, dataStore);
+	extractPokemonCount(content);
+	extractPlayerInfo(content);
+	extractEggInfo(content);
+	extractItemCount(content);
+
+	addDataToDb({id: 'gameplay', ...data});
 };
 
 // Individual Processors
 
 // Pokemon count
-const extractPokemonCount = (content: string, dataStore: any) => {
+const extractPokemonCount = (content: string) => {
 	// Find the start of the "Pokemon in your collection:" section
 	const start = content.indexOf('Pokemon in your collection:');
 	if (start === -1) return 0; // If no section found, return 0
@@ -30,10 +72,10 @@ const extractPokemonCount = (content: string, dataStore: any) => {
 		pokemonCount++;
 	}
 
-	dataStore.setPokemonCount(pokemonCount);
+	data.pokemonCount = pokemonCount;
 };
 
-const extractPlayerInfo = (content: string, dataStore: any) => {
+const extractPlayerInfo = (content: string) => {
 	const playerInfoRegex = {
 		startDate: /Start date:\s*(.*)/,
 		level: /Level:\s*(\d+)/,
@@ -67,10 +109,10 @@ const extractPlayerInfo = (content: string, dataStore: any) => {
 		}
 	}
 
-	dataStore.setPlayerInfo(playerInfo);
+	data.playerInfo = playerInfo;
 };
 
-const extractEggInfo = (content: string, dataStore: any) => {
+const extractEggInfo = (content: string) => {
 	const eggLineStart = content.indexOf('You have hatched');
 	if (eggLineStart === -1) return 0;
 
@@ -84,14 +126,14 @@ const extractEggInfo = (content: string, dataStore: any) => {
 	const hatchedEggMatch = eggLine.match(/You have hatched (\d+)/);
 	const hatchedEggs = hatchedEggMatch ? parseInt(hatchedEggMatch[1]) : 0;
 
-	dataStore.setEggsOwned(currentEggs);
-	dataStore.setEggsHatched(hatchedEggs);
+	data.eggsOwned = currentEggs;
+	data.eggsHatched = hatchedEggs;
 };
 
-const extractItemCount = (content: string, dataStore: any) => {
+const extractItemCount = (content: string) => {
 	const itemCountRegex = /You have (\d+) items/;
 	const match = content.match(itemCountRegex);
 	const itemCount = match ? parseInt(match[1]) : 0;
 
-	dataStore.setItemCount(itemCount);
+	data.itemCount = itemCount;
 };

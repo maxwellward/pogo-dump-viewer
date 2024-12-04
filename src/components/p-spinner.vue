@@ -9,27 +9,20 @@
 	</div>
 </template>
 
-<script>
-export default {
-	name: 'PSpinner',
-	props: {
-		size: {
-			type: String,
-			default: '32px',
-		},
+<script setup lang="ts">
+import { computed } from 'vue';
+import { defineProps } from 'vue';
+
+const props = defineProps({
+	size: {
+		type: String,
+		default: '32px',
 	},
-	computed: {
-		centerSize() {
-			return `calc(${this.size} / 4)`;
-		},
-		borderSize() {
-			return `calc(${this.size} / 24)`;
-		},
-		lineSize() {
-			return `calc(${this.size} / 24)`;
-		},
-	},
-};
+});
+
+const centerSize = computed(() => `calc(${props.size} / 4)`);
+const borderSize = computed(() => `calc(${props.size} / 24)`);
+const lineSize = computed(() => `calc(${props.size} / 24)`);
 </script>
 
 <style scoped>

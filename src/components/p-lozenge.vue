@@ -1,25 +1,32 @@
 <template>
 	<span>
-		<span class="lozenge" :appearance="appearance" :bold="isBold">
+		<span class="lozenge" :class="lozengeClasses">
 			<slot />
 		</span>
 	</span>
 </template>
 
-<script>
-export default {
-	props: {
-		appearance: {
-			type: String,
-			validator: (value) => ['default', 'success', 'removed', 'inprogress', 'new', 'moved'].includes(value),
-			default: 'default',
-		},
-		isBold: {
-			type: Boolean,
-			default: false,
-		},
+<script setup lang="ts">
+import { defineProps, computed } from 'vue';
+
+const props = defineProps({
+	appearance: {
+		type: String,
+		validator: (value: string) => ['default', 'success', 'removed', 'inprogress', 'new', 'moved'].includes(value),
+		default: 'default',
 	},
-};
+	isBold: {
+		type: Boolean,
+		default: false,
+	},
+});
+
+const lozengeClasses = computed(() => {
+	return {
+		[`appearance-${props.appearance}`]: true,
+		bold: props.isBold,
+	};
+});
 </script>
 
 <style scoped>
@@ -41,53 +48,53 @@ export default {
 	white-space: nowrap;
 }
 
-.lozenge[appearance='success'] {
+.lozenge.appearance-success {
 	background-color: var(--ds-background-success, #e3fcef);
 	color: var(--ds-text-success, #006644);
 }
 
-.lozenge[appearance='removed'] {
+.lozenge.appearance-removed {
 	background-color: var(--ds-background-danger, #ffebe6);
 	color: var(--ds-text-danger, #de350b);
 }
 
-.lozenge[appearance='inprogress'] {
+.lozenge.appearance-inprogress {
 	background-color: var(--ds-background-information, #deebff);
 	color: var(--ds-text-information, #0052cc);
 }
 
-.lozenge[appearance='new'] {
+.lozenge.appearance-new {
 	background-color: var(--ds-background-discovery, #eae6ff);
 	color: var(--ds-text-discovery, #403294);
 }
 
-.lozenge[appearance='moved'] {
+.lozenge.appearance-moved {
 	background-color: var(--ds-background-warning, #fffae6);
 	color: var(--ds-text-warning, #974f0c);
 }
 
-.lozenge[bold] {
+.lozenge.bold {
 	background-color: var(--ds-background-neutral-bold, #42526e);
 	color: var(--ds-text-inverse, #ffffff);
 }
 
-.lozenge[bold][appearance='success'] {
+.lozenge.bold.appearance-success {
 	background-color: var(--ds-background-success-bold, #00875a);
 }
 
-.lozenge[bold][appearance='removed'] {
+.lozenge.bold.appearance-removed {
 	background-color: var(--ds-background-danger-bold, #de350b);
 }
 
-.lozenge[bold][appearance='inprogress'] {
+.lozenge.bold.appearance-inprogress {
 	background-color: var(--ds-background-information-bold, #0052cc);
 }
 
-.lozenge[bold][appearance='new'] {
+.lozenge.bold.appearance-new {
 	background-color: var(--ds-background-discovery-bold, #5243aa);
 }
 
-.lozenge[bold][appearance='moved'] {
+.lozenge.bold.appearance-moved {
 	background-color: var(--ds-background-warning-bold, #ffab00);
 	color: rgb(23, 43, 77);
 }

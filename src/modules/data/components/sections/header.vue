@@ -18,15 +18,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Logo from '../../../assets/logo.vue';
+import Logo from '../../../../assets/logo.vue';
 import { BugAntIcon } from '@heroicons/vue/24/outline';
-import { getDataFromDb } from '../../../helpers/indexedDb';
-import { Gameplay } from '../types';
+import { getDataFromDb } from '../../../../helpers/indexedDb';
+import { Gameplay } from '../../types';
 
 const playerInfo = ref();
 
 onMounted(async () => {
-	const data: Gameplay = await getDataFromDb('gameplay');	
+	const data: Gameplay = await getDataFromDb('gameplay');
+	console.log(data);
+
 	playerInfo.value = data.playerInfo;
 });
 </script>

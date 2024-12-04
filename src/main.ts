@@ -6,8 +6,8 @@ import { createPinia } from 'pinia';
 import PCard from './components/p-card.vue';
 import PSpinner from './components/p-spinner.vue';
 import PSidebar from './components/p-sidebar.vue';
-import PNavItem from './components/p-nav-item.vue';
 import PLozenge from './components/p-lozenge.vue';
+import PNavItem from './components/p-nav-item.vue';
 import PDot from './components/p-dot.vue';
 
 const pinia = createPinia();

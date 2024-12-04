@@ -26,8 +26,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getDataFromDb } from '../../../helpers/indexedDb';
-import { Gameplay } from '../types';
+import { getDataFromDb } from '../../../../helpers/indexedDb';
+import { Gameplay } from '../../types';
 
 let playerInfoList = ref();
 let data: Gameplay;
@@ -39,7 +39,7 @@ onMounted(async () => {
 		{ label: 'Items in Bag', value: data.itemCount },
 		{ label: 'Pokecoin Balance', value: data.playerInfo.pokecoins },
 		{ label: 'Distance Walked', value: data.playerInfo.distanceWalked, suffix: 'km' },
-		{ label: 'Eggs Hatched', value: data.eggsHatched }
+		{ label: 'Eggs Hatched', value: data.eggsHatched },
 	];
 });
 </script>

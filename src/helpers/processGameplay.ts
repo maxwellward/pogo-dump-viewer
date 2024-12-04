@@ -1,4 +1,3 @@
-import { useDataStore } from '../modules/data/types';
 import { addDataToDb } from './indexedDb';
 
 type Gameplay = {
@@ -49,7 +48,7 @@ export const processGameplay = async (file: File) => {
 	extractEggInfo(content);
 	extractItemCount(content);
 
-	addDataToDb({id: 'gameplay', ...data});
+	addDataToDb({ id: 'gameplay', ...data });
 };
 
 // Individual Processors
@@ -89,7 +88,7 @@ const extractPlayerInfo = (content: string) => {
 		buddyNickname: /Buddy nickname:\s*(.*)/,
 	};
 
-	const playerInfo: { [key in keyof typeof playerInfoRegex]: string | number } = {
+	const playerInfo: { [key in keyof typeof playerInfoRegex]: any } = {
 		startDate: '',
 		level: 0,
 		totalXP: 0,

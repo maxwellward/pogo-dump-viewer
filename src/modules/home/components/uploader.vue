@@ -128,7 +128,7 @@ const saveFilesToStore = async () => {
 		const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
 		const json = await convertFunction(await file.text());
 
-		addDataToDb({id: fileNameWithoutExtension, ...json});
+		addDataToDb({ id: fileNameWithoutExtension, data: [...json] });
 		completedFiles++;
 
 		percentage.value = (completedFiles / totalFiles) * 100;

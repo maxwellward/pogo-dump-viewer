@@ -140,36 +140,24 @@ const extractItemCount = (content: string) => {
 };
 
 const extractPokemonCollection = (content: string) => {
-	// Find the start of the "Pokemon in your collection:" section
 	const start = content.indexOf('Pokemon in your collection:');
-	if (start === -1) return []; // If no section found, return an empty array
-
-	// Extract the substring starting from the "Pokemon in your collection:"
+	if (start === -1) return [];
 	const collectionSection = content.slice(start).split('\n').slice(1);
 
 	const pokemonNames = [];
 
-	// Process each line in the collection section
 	for (let line of collectionSection) {
 		line = line.trim();
-
-		// Stop processing if we hit a blank line or unrelated section
 		if (line === '' || line.startsWith('You have')) break;
-
-		// Remove nicknames or anything in parentheses at the end of the line
 		line = line.replace(/\s*\(.*\)$/, '');
 
 		// Extract name, handling both formats: with and without prefix
-		let name = line.includes('_POKEMON_')
-			? line.split('_POKEMON_').pop() // Extract after "_POKEMON_"
-			: line;
+		let name = line.includes('_POKEMON_') ? line.split('_POKEMON_').pop() : line;
 
-		// Capitalize the first character
 		if (name) {
 			name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 		}
 
-		// Add to the list
 		pokemonNames.push(name);
 	}
 

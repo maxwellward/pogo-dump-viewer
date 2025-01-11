@@ -6,8 +6,16 @@
 			:title="`$${totalSpend} USD`"
 			subtitle="Spent in Store"
 			:description="`${percentageOfAverage}% ${percentageOfAverage > 0 ? 'Higher' : 'Lower'} than Average`" />
-		<StoreCard colour="#ECEAFE" title="$468" subtitle="Spent in Store" description="24% Higher than Average" />
-		<StoreCard colour="#E5F7FF" title="$468" subtitle="Spent in Store" description="24% Higher than Average" />
+		<StoreCard
+			colour="#ECEAFE"
+			:title="`${totalCoinSpend.toLocaleString()} Pokecoins`"
+			subtitle="Spent in Store"
+			:description="`Over ${totalCoinTransactions.toLocaleString()} different transactions`" />
+		<StoreCard
+			colour="#E5F7FF"
+			:title="`${totalFriends}`"
+			subtitle="Friends"
+			:description="`You invited ${friendsInvited}, and ${friendsInvitedYou} invited you`" />
 	</div>
 </template>
 
@@ -18,10 +26,18 @@ import { getDataFromDb } from '../../../../helpers/indexedDb';
 
 onMounted(async () => {
 	await getMoneySpent();
+	await getPokecoinsSpent();
+	await getFriendCount();
 });
 
 // TODO: Merge these all into one so I don't have to loop through the JSON multiple times
 // TODO: Make this use any currency
+const totalFriends = ref(0);
+const friendsInvited = ref(0);
+const friendsInvitedYou = ref(0);
+
+const totalCoinSpend = ref(0);
+const totalCoinTransactions = ref(0);
 
 const totalSpend = ref(0);
 const yearsPlayed = ref(1);
@@ -49,9 +65,34 @@ const getMoneySpent = async () => {
 
 const calculateSpendPercentage = () => {
 	const averageSpend = yearsPlayed.value * 30;
-	console.log(totalSpend.value, averageSpend);
-
 	const percentage = ((totalSpend.value / averageSpend) * 100).toFixed(0);
 	percentageOfAverage.value = Number(percentage);
+};
+// Change in pokecoins
+const getPokecoinsSpent = async () => {
+	const { data } = await getDataFromDb('InAppPurchases');
+
+	totalCoinSpend.value = data
+		.reduce((acc: number, purchase: any) => {
+			if (purchase['Change in pokecoins']) {
+				acc += Math.abs(Number(purchase['Change in pokecoins']));
+				totalCoinTransactions.value++;
+			}
+			return acc;
+		}, 0)
+		.toFixed(0);
+};
+
+const getFriendCount = async () => {
+	const { data } = await getDataFromDb('FriendList');
+
+	data.forEach((friend) => {
+		totalFriends.value++;
+		if (friend['Friendship initiated by'] === 'You') {
+			friendsInvited.value++;
+		} else {
+			friendsInvitedYou.value++;
+		}
+	});
 };
 </script>

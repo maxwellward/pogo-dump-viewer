@@ -1,5 +1,10 @@
 <template>
 	<div class="flex flex-col justify-center w-full border items-center">
+		<div class="border-red-400 bg-red-200 rounded-lg px-12 py-4 border-2 text-center mb-8">
+			<h1>POGO DATA IS UNDER DEVELOPMENT</h1>
+			<p>Things will be incomplete, break, and be different from day to day.</p>
+			<p>If Kyle sent you this, tell him he's a goober.</p>
+		</div>
 		<Logo class="size-24" />
 		<h1 class="text-3xl font-extrabold text-title mt-4">Pokemon GO Data Viewer</h1>
 		<p class="font-semibold w-3/4 text-center mt-3">

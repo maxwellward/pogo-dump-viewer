@@ -86,13 +86,14 @@ const getPokecoinsSpent = async () => {
 const getFriendCount = async () => {
 	const { data } = await getDataFromDb('FriendList');
 
-	data.forEach((friend) => {
+	for (let index = 0; index < data.length; index++) {
 		totalFriends.value++;
-		if (friend['Friendship initiated by'] === 'You') {
+		if (data[index]['Friendship initiated by'] === 'You') {
 			friendsInvited.value++;
 		} else {
 			friendsInvitedYou.value++;
 		}
-	});
+		
+	}
 };
 </script>
